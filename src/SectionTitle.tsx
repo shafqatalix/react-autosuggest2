@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import compareObjects from './compareObjects';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import compareObjects from "./compareObjects";
 
 export default class SectionTitle extends Component {
+  props;
   static propTypes = {
     section: PropTypes.any.isRequired,
     renderSectionTitle: PropTypes.func.isRequired,
@@ -23,7 +24,7 @@ export default class SectionTitle extends Component {
     }
 
     return (
-      <div {...theme(`${sectionKeyPrefix}title`, 'sectionTitle')}>
+      <div {...theme(`${sectionKeyPrefix}title`, "sectionTitle")}>
         {sectionTitle}
       </div>
     );

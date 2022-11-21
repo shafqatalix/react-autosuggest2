@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import createSectionIterator from 'section-iterator';
-import themeable from 'react-themeable';
-import SectionTitle from './SectionTitle';
-import ItemList from './ItemList';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import createSectionIterator from "section-iterator";
+import themeable from "react-themeable";
+import SectionTitle from "./SectionTitle";
+import ItemList from "./ItemList";
 
 const emptyObject = {};
 const defaultRenderInputComponent = (props) => <input {...props} />;
@@ -11,23 +11,24 @@ const defaultRenderItemsContainer = ({ containerProps, children }) => (
   <div {...containerProps}>{children}</div>
 );
 const defaultTheme = {
-  container: 'react-autowhatever__container',
-  containerOpen: 'react-autowhatever__container--open',
-  input: 'react-autowhatever__input',
-  inputOpen: 'react-autowhatever__input--open',
-  inputFocused: 'react-autowhatever__input--focused',
-  itemsContainer: 'react-autowhatever__items-container',
-  itemsContainerOpen: 'react-autowhatever__items-container--open',
-  itemsList: 'react-autowhatever__items-list',
-  item: 'react-autowhatever__item',
-  itemFirst: 'react-autowhatever__item--first',
-  itemHighlighted: 'react-autowhatever__item--highlighted',
-  sectionContainer: 'react-autowhatever__section-container',
-  sectionContainerFirst: 'react-autowhatever__section-container--first',
-  sectionTitle: 'react-autowhatever__section-title',
+  container: "react-autowhatever__container",
+  containerOpen: "react-autowhatever__container--open",
+  input: "react-autowhatever__input",
+  inputOpen: "react-autowhatever__input--open",
+  inputFocused: "react-autowhatever__input--focused",
+  itemsContainer: "react-autowhatever__items-container",
+  itemsContainerOpen: "react-autowhatever__items-container--open",
+  itemsList: "react-autowhatever__items-list",
+  item: "react-autowhatever__item",
+  itemFirst: "react-autowhatever__item--first",
+  itemHighlighted: "react-autowhatever__item--highlighted",
+  sectionContainer: "react-autowhatever__section-container",
+  sectionContainerFirst: "react-autowhatever__section-container--first",
+  sectionTitle: "react-autowhatever__section-title",
 };
 
-export default class Autowhatever extends Component {
+export default class Autowhatever extends Component<any, any> {
+  props;
   static propTypes = {
     id: PropTypes.string, // Used in aria-* attributes. If multiple Autowhatever's are rendered on a page, they must have unique ids.
     multiSection: PropTypes.bool, // Indicates whether a multi section layout should be rendered.
@@ -55,19 +56,19 @@ export default class Autowhatever extends Component {
   };
 
   static defaultProps = {
-    id: '1',
+    id: "1",
     multiSection: false,
     renderInputComponent: defaultRenderInputComponent,
     renderItemsContainer: defaultRenderItemsContainer,
     renderItem: () => {
-      throw new Error('`renderItem` must be provided');
+      throw new Error("`renderItem` must be provided");
     },
     renderItemData: emptyObject,
     renderSectionTitle: () => {
-      throw new Error('`renderSectionTitle` must be provided');
+      throw new Error("`renderSectionTitle` must be provided");
     },
     getSectionItems: () => {
-      throw new Error('`getSectionItems` must be provided');
+      throw new Error("`getSectionItems` must be provided");
     },
     containerProps: emptyObject,
     inputProps: emptyObject,
@@ -76,10 +77,11 @@ export default class Autowhatever extends Component {
     highlightedItemIndex: null,
     theme: defaultTheme,
   };
-
+  highlightedItem;
+  state;
   constructor(props) {
     super(props);
-
+    //@ts-ignore
     this.highlightedItem = null;
 
     this.state = {
@@ -116,7 +118,9 @@ export default class Autowhatever extends Component {
   componentDidUpdate() {
     this.ensureHighlightedItemIsVisible();
   }
-
+  sectionsItems;
+  sectionsLengths;
+  allSectionsAreEmpty;
   setSectionsItems(props) {
     if (props.multiSection) {
       this.sectionsItems = props.items.map((section) =>
@@ -128,18 +132,18 @@ export default class Autowhatever extends Component {
       );
     }
   }
-
+  sectionIterator;
   setSectionIterator(props) {
     this.sectionIterator = createSectionIterator({
       multiSection: props.multiSection,
       data: props.multiSection ? this.sectionsLengths : props.items.length,
     });
   }
-
+  theme;
   setTheme(props) {
     this.theme = themeable(props.theme);
   }
-
+  input;
   storeInputReference = (input) => {
     if (input !== null) {
       this.input = input;
@@ -148,17 +152,17 @@ export default class Autowhatever extends Component {
     const userRef = this.props.inputProps.ref;
 
     if (userRef) {
-      if (typeof userRef === 'function') {
+      if (typeof userRef === "function") {
         userRef(input);
       } else if (
-        typeof userRef === 'object' &&
-        Object.prototype.hasOwnProperty.call(userRef, 'current')
+        typeof userRef === "object" &&
+        Object.prototype.hasOwnProperty.call(userRef, "current")
       ) {
         userRef.current = input;
       }
     }
   };
-
+  itemsContainer;
   storeItemsContainerReference = (itemsContainer) => {
     if (itemsContainer !== null) {
       this.itemsContainer = itemsContainer;
@@ -175,11 +179,11 @@ export default class Autowhatever extends Component {
     }
 
     const { id } = this.props;
-    const section = sectionIndex === null ? '' : `section-${sectionIndex}`;
+    const section = sectionIndex === null ? "" : `section-${sectionIndex}`;
 
     return `react-autowhatever-${id}-${section}-item-${itemIndex}`;
   };
-
+  storeItemsListReference;
   renderSections() {
     if (this.allSectionsAreEmpty) {
       return null;
@@ -208,8 +212,8 @@ export default class Autowhatever extends Component {
         <div
           {...theme(
             `${sectionKeyPrefix}container`,
-            'sectionContainer',
-            isFirstSection && 'sectionContainerFirst'
+            "sectionContainer",
+            isFirstSection && "sectionContainerFirst"
           )}
         >
           <SectionTitle
@@ -296,25 +300,20 @@ export default class Autowhatever extends Component {
   };
 
   onKeyDown = (event) => {
-    const {
-      inputProps,
-      highlightedSectionIndex,
-      highlightedItemIndex,
-    } = this.props;
+    const { inputProps, highlightedSectionIndex, highlightedItemIndex } =
+      this.props;
     const { keyCode } = event;
 
     switch (keyCode) {
       case 40: // ArrowDown
       case 38: {
         // ArrowUp
-        const nextPrev = keyCode === 40 ? 'next' : 'prev';
-        const [
-          newHighlightedSectionIndex,
-          newHighlightedItemIndex,
-        ] = this.sectionIterator[nextPrev]([
-          highlightedSectionIndex,
-          highlightedItemIndex,
-        ]);
+        const nextPrev = keyCode === 40 ? "next" : "prev";
+        const [newHighlightedSectionIndex, newHighlightedItemIndex] =
+          this.sectionIterator[nextPrev]([
+            highlightedSectionIndex,
+            highlightedItemIndex,
+          ]);
 
         inputProps.onKeyDown(event, {
           newHighlightedSectionIndex,
@@ -386,29 +385,29 @@ export default class Autowhatever extends Component {
     );
     const itemsContainerId = `react-autowhatever-${id}`;
     const containerProps = {
-      role: 'combobox',
-      'aria-haspopup': 'listbox',
-      'aria-owns': itemsContainerId,
-      'aria-expanded': isOpen,
+      role: "combobox",
+      "aria-haspopup": "listbox",
+      "aria-owns": itemsContainerId,
+      "aria-expanded": isOpen,
       ...theme(
         `react-autowhatever-${id}-container`,
-        'container',
-        isOpen && 'containerOpen'
+        "container",
+        isOpen && "containerOpen"
       ),
       ...this.props.containerProps,
     };
     const inputComponent = renderInputComponent({
-      type: 'text',
-      value: '',
-      autoComplete: 'off',
-      'aria-autocomplete': 'list',
-      'aria-controls': itemsContainerId,
-      'aria-activedescendant': ariaActivedescendant,
+      type: "text",
+      value: "",
+      autoComplete: "off",
+      "aria-autocomplete": "list",
+      "aria-controls": itemsContainerId,
+      "aria-activedescendant": ariaActivedescendant,
       ...theme(
         `react-autowhatever-${id}-input`,
-        'input',
-        isOpen && 'inputOpen',
-        isInputFocused && 'inputFocused'
+        "input",
+        isOpen && "inputOpen",
+        isInputFocused && "inputFocused"
       ),
       ...this.props.inputProps,
       onFocus: this.onFocus,
@@ -419,11 +418,11 @@ export default class Autowhatever extends Component {
     const itemsContainer = renderItemsContainer({
       containerProps: {
         id: itemsContainerId,
-        role: 'listbox',
+        role: "listbox",
         ...theme(
           `react-autowhatever-${id}-items-container`,
-          'itemsContainer',
-          isOpen && 'itemsContainerOpen'
+          "itemsContainer",
+          isOpen && "itemsContainerOpen"
         ),
         ref: this.storeItemsContainerReference,
       },

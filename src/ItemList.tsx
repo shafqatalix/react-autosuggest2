@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Item from './Item';
-import compareObjects from './compareObjects';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import Item from "./Item";
+import compareObjects from "./compareObjects";
 
 export default class ItemsList extends Component {
+  props;
   static propTypes = {
     items: PropTypes.array.isRequired,
     itemProps: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
@@ -22,7 +23,7 @@ export default class ItemsList extends Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    return compareObjects(nextProps, this.props, ['itemProps']);
+    return compareObjects(nextProps, this.props, ["itemProps"]);
   }
 
   storeHighlightedItemReference = (highlightedItem) => {
@@ -47,10 +48,10 @@ export default class ItemsList extends Component {
       sectionIndex === null
         ? keyPrefix
         : `${keyPrefix}section-${sectionIndex}-`;
-    const isItemPropsFunction = typeof itemProps === 'function';
+    const isItemPropsFunction = typeof itemProps === "function";
 
     return (
-      <ul role="listbox" {...theme(`${sectionPrefix}items-list`, 'itemsList')}>
+      <ul role="listbox" {...theme(`${sectionPrefix}items-list`, "itemsList")}>
         {items.map((item, itemIndex) => {
           const isFirst = itemIndex === 0;
           const isHighlighted = itemIndex === highlightedItemIndex;
@@ -60,12 +61,12 @@ export default class ItemsList extends Component {
             : itemProps;
           const allItemProps = {
             id: getItemId(sectionIndex, itemIndex),
-            'aria-selected': isHighlighted,
+            "aria-selected": isHighlighted,
             ...theme(
               itemKey,
-              'item',
-              isFirst && 'itemFirst',
-              isHighlighted && 'itemHighlighted'
+              "item",
+              isFirst && "itemFirst",
+              isHighlighted && "itemHighlighted"
             ),
             ...itemPropsObj,
           };

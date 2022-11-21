@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import compareObjects from './compareObjects';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import compareObjects from "./compareObjects";
 
 export default class Item extends Component {
+  props;
   static propTypes = {
     sectionIndex: PropTypes.number,
     isHighlighted: PropTypes.bool.isRequired,
@@ -17,9 +18,9 @@ export default class Item extends Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    return compareObjects(nextProps, this.props, ['renderItemData']);
+    return compareObjects(nextProps, this.props, ["renderItemData"]);
   }
-
+  item;
   storeItemReference = (item) => {
     if (item !== null) {
       this.item = item;
@@ -51,30 +52,25 @@ export default class Item extends Component {
   };
 
   render() {
-    const {
-      isHighlighted,
-      item,
-      renderItem,
-      renderItemData,
-      ...restProps
-    } = this.props;
+    const { isHighlighted, item, renderItem, renderItemData, ...restProps } =
+      this.props;
 
     delete restProps.sectionIndex;
     delete restProps.itemIndex;
 
-    if (typeof restProps.onMouseEnter === 'function') {
+    if (typeof restProps.onMouseEnter === "function") {
       restProps.onMouseEnter = this.onMouseEnter;
     }
 
-    if (typeof restProps.onMouseLeave === 'function') {
+    if (typeof restProps.onMouseLeave === "function") {
       restProps.onMouseLeave = this.onMouseLeave;
     }
 
-    if (typeof restProps.onMouseDown === 'function') {
+    if (typeof restProps.onMouseDown === "function") {
       restProps.onMouseDown = this.onMouseDown;
     }
 
-    if (typeof restProps.onClick === 'function') {
+    if (typeof restProps.onClick === "function") {
       restProps.onClick = this.onClick;
     }
 
